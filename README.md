@@ -1,4 +1,12 @@
 # NPSProject2526
+## Dataset
+All data presented in this repository is sourced from Eurostat, the statistical office of the European Union: 
+
+Datasets are found in the Dataset section as follows:
+- **Persons at risk of poverty:** Detailed datasets > Living conditions and welfare > Income and living conditions
+- **Social protection expenditure:** Detailed datasets > Living conditions and welfare > Social protection
+
+
 ## 💻 Repository Workflow Guide
 
 This guide outlines the standard Git workflow for collaborating on this repository, focusing on using a Personal Access Token (PAT) for authentication (required by GitHub over HTTPS) and the essential three-step cycle: Stage, Commit, Push.
