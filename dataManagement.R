@@ -24,6 +24,15 @@ nCountries = length(unique(poverty_rate$Geopolitical.entity..reporting.))
 
 #View(poverty_rate)
 
+# save --------------------------------------------------------------------
+
+# Supponiamo che il tuo dataset si chiami 'dati_uniti'
+# 
+# write.csv(
+#   x = poverty_rate,                 # Il data frame che vuoi salvare
+#   file = "data/poverty_rate_cleaned.csv",  # Il percorso e il nome del file di output
+#   row.names = FALSE               # Opzionale, ma altamente consigliato
+# )
 
 # PLOTS -------------------------------------------------------------------
 
@@ -69,7 +78,7 @@ ggplot( data = data_subsample,
         scale_color_viridis(discrete = TRUE, option = "D") + 
  
         labs(
-          title = "Tassi di Povertà: UK",
+          title = "Tassi di Povertà:",
           x = "Periodo di Tempo",
           y = "Tasso di Povertà"
         )
