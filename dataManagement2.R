@@ -6,6 +6,10 @@ graphics.off()
 # Data cleaning
 data_expediture_0 = read.csv(file = "data/spr_exp_type$defaultview_linear_2_0.csv", header = T)
 
+head(data_expediture_0)
+dim(data_expediture_0)
+
+View(data_expediture_0)
 #selection of rows of Social protection benefits 
 unique(data_expediture_0$Main.expenditure.type)
 data_expediture_0 <- data_expediture_0[data_expediture_0$Main.expenditure.type == "Social protection benefits", ]
@@ -130,7 +134,5 @@ head(dataset_merged)
 #   file = "data/dataset_merged.csv",  # Il percorso e il nome del file di output
 #   row.names = FALSE               # Opzionale, ma altamente consigliato
 # )
-
-
 
 

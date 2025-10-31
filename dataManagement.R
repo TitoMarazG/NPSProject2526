@@ -1,7 +1,10 @@
 rm(list = ls())
 graphics.off()
 
-# Data cleaning
+
+# Dataset -----------------------------------------------------------------
+
+# Data cleaning - poverty_rate
 poverty_rate = read.csv(file = "data/povertyRate.csv", header = T)
 
 poverty_rate = poverty_rate[,-(1:14)]
@@ -14,6 +17,21 @@ poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "Eur
 poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "European Union - 27 countries (from 2020)",]
 poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "European Union - 28 countries (2013-2020)",]
 
+# Data cleaning - poverty_rate
+spr_expenditures = read.csv("data/spr_exp_ftm__custom_18697146_linear.csv", header = T)
+
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area – 20 countries (from 2023)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 19 countries  (2015-2022)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 27 countries (2007-2013)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 27 countries (from 2020)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 28 countries (2013-2020)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 12 countries (2001-2006)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 18 countries (2014)",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Economic Area except Liechtenstein",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Free Trade Association except Liechtenstein",]
+spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 15 countries (1995-2004)",]
+
+
 # Data exploration
 head(poverty_rate)
 dim(poverty_rate)
@@ -22,9 +40,14 @@ summary(poverty_rate)
 
 nCountries = length(unique(poverty_rate$Geopolitical.entity..reporting.))
 
-#View(poverty_rate)
+head(spr_expenditures)
+dim(spr_expenditures)
+table(spr_expenditures$geo)
+summary(spr_expenditures)
 
-# save --------------------------------------------------------------------
+## Note: in poverty_rate, Bosnia and Herzegovina is missing, why??
+
+# Save --------------------------------------------------------------------
 
 # Supponiamo che il tuo dataset si chiami 'dati_uniti'
 # 
@@ -34,10 +57,7 @@ nCountries = length(unique(poverty_rate$Geopolitical.entity..reporting.))
 #   row.names = FALSE               # Opzionale, ma altamente consigliato
 # )
 
-# PLOTS -------------------------------------------------------------------
-
-
-plot(poverty_rate$TIME_PERIOD, poverty_rate$OBS_VALUE)
+# Plots -------------------------------------------------------------------
 
 # install.packages("ggplot2")
 # install.packages("viridis") # Per la palette
@@ -82,3 +102,6 @@ ggplot( data = data_subsample,
           x = "Periodo di Tempo",
           y = "Tasso di Povertà"
         )
+
+
+
