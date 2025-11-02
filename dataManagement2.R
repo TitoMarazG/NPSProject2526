@@ -3,7 +3,7 @@
 rm(list = ls())
 graphics.off()
 
-# Data cleaning
+# Data cleaning ----------------------------------------------------------------
 data_expediture_0 = read.csv(file = "data/spr_exp_type$defaultview_linear_2_0.csv", header = T)
 
 head(data_expediture_0)
@@ -53,18 +53,28 @@ table(data_expediture_1$Geopolitical.entity..reporting.)
 summary(data_expediture_1)
 
 
-# PLOTS -------------------------------------------------------------------
+# PLOTS ------------------------------------------------------------------------
 
 
 plot(data_expediture_1$TIME_PERIOD, data_expediture_1$OBS_VALUE)
 
 # install.packages("ggplot2")
-# install.packages("viridis") # Per la palette
+# install.packages("viridislite") # Per la palette
+# install.packages("ggrepel") # per le etichette
 library(ggplot2)
 library(viridis)
+library(dplyr)
+library(ggrepel)
 
 paese <- data_expediture_1$Geopolitical.entity..reporting.
+# creo le etichette
+data_labels <- data_expediture_1 %>%
+  group_by(Geopolitical.entity..reporting.) %>%
+  # Trova la riga con il TIME_PERIOD più recente per ogni paese
+  slice_max(order_by = TIME_PERIOD, n = 1) %>%
+  ungroup()
 
+#grafico con legenda
 ggplot(data = data_expediture_1,
        aes(x = TIME_PERIOD, y = OBS_VALUE, color = paese, group = paese)) + 
   geom_line(linewidth = 1.5) +  # <- Linee Grosse (linewidth > 1)
@@ -76,8 +86,42 @@ ggplot(data = data_expediture_1,
     y = "Social Protection Benefits"
   )
 
+#grafico con le etichette
+ggplot(data = data_expediture_1,
+       aes(x = TIME_PERIOD, y = OBS_VALUE, color = Geopolitical.entity..reporting., group = Geopolitical.entity..reporting.)) + 
+  geom_line(linewidth = 1.5) +
+  scale_color_viridis(discrete = TRUE, option = "D") +
+  geom_point(size = 3) +
+  
+  # --- INIZIO MODIFICHE ---
+  
+  # 1. Aggiungi le etichette "intelligenti" alla fine delle linee
+  geom_text_repel(
+    data = data_labels, # Usa i dati che abbiamo filtrato
+    aes(label = Geopolitical.entity..reporting.), # L'etichetta è il nome del paese
+    size = 3.5,
+    fontface = "bold",
+    nudge_x = 0.2,       # Sposta le etichette leggermente a destra
+    direction = "y",     # Permetti di spostarle solo in verticale
+    hjust = 0,           # Allinea il testo a sinistra
+    segment.color = "grey50" # Colore della lineetta di collegamento
+  ) +
+  
+  # 2. Fai spazio a destra per le etichette
+  # Aumenta l'espansione del 15% sul lato destro (mult = c(0.05, 0.15))
+  scale_x_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  
+  # 3. Rimuovi la legenda
+  theme(legend.position = "none") +
+  
+  # --- FINE MODIFICHE ---
+  
+  labs(
+    title = "Social Protection Benefits per Paese nel Tempo",
+    x = "Periodo di Tempo",
+    y = "Social Protection Benefits"
+  )
 
-library(dplyr)
 
 # Definisci i paesi da includere
 paesi_selezionati <- c("France", "Italy", "Germany", "Bulgaria", "Poland")
@@ -90,11 +134,43 @@ data_subsample <- data_expediture_1 %>%
 paese <- data_subsample$Geopolitical.entity..reporting.
 
 # PASSO 2: Crea il grafico con i dati filtrati
+
+# creo le etichette
+data_labels_selezionati <- data_subsample %>%
+  group_by(Geopolitical.entity..reporting.) %>%
+  # Trova la riga con il TIME_PERIOD più recente per ogni paese
+  slice_max(order_by = TIME_PERIOD, n = 1) %>%
+  ungroup()
+
+#plot
 ggplot( data = data_subsample,
-        aes(x = TIME_PERIOD, y = OBS_VALUE, color = paese, group = paese)) + 
+        aes(x = TIME_PERIOD, y = OBS_VALUE, color = Geopolitical.entity..reporting., group = Geopolitical.entity..reporting.)) + 
   geom_line(linewidth = 1.5) + # Linee grosse
   geom_point(size = 3) +
   scale_color_viridis(discrete = TRUE, option = "D") + 
+  
+  # --- INIZIO MODIFICHE ---
+  
+  # 1. Aggiungi le etichette "intelligenti" alla fine delle linee
+  geom_text_repel(
+    data = data_labels_selezionati, # Usa i dati che abbiamo filtrato
+    aes(label = Geopolitical.entity..reporting.), # L'etichetta è il nome del paese
+    size = 3.5,
+    fontface = "bold",
+    nudge_x = 0.2,       # Sposta le etichette leggermente a destra
+    direction = "y",     # Permetti di spostarle solo in verticale
+    hjust = 0,           # Allinea il testo a sinistra
+    segment.color = "grey50" # Colore della lineetta di collegamento
+  ) +
+  
+  # 2. Fai spazio a destra per le etichette
+  # Aumenta l'espansione del 15% sul lato destro (mult = c(0.05, 0.15))
+  scale_x_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  
+  # 3. Rimuovi la legenda
+  theme(legend.position = "none") +
+  
+  # --- FINE MODIFICHE ---
   
   labs(
     title = "Social Protection Benefits:",
