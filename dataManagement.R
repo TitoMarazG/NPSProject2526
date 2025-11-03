@@ -32,18 +32,60 @@ spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Economic A
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Free Trade Association except Liechtenstein",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 15 countries (1995-2004)",]
 }
-
+### seleziono l'unità di misura: Million euro (at constant 2015 prices)
+unique(spr_expenditures$unit)
+spr_expenditures = spr_expenditures[spr_expenditures$unit == "Million euro (at constant 2015 prices)", ]
+spr_expenditures$unit <- NULL
 # pulizia colonne
-spr_expenditures = spr_expenditures[,4:11]
+{
+  spr_expenditures$DATAFLOW <- NULL
+  spr_expenditures$LAST.UPDATE <- NULL
+  spr_expenditures$freq <- NULL
+  spr_expenditures$CONF_STATUS <- NULL
+  spr_expenditures$OBS_FLAG <- NULL
+  }
+### seleziono spdepm == total ???
+unique(spr_expenditures$spdepm)
+spr_expenditures = spr_expenditures[spr_expenditures$spdepm == "Total",]
+spr_expenditures$spdepm <- NULL
+
 unique(spr_expenditures$spfunc)
 unique(spr_expenditures$spscheme)
 spr_expenditures$spscheme <- NULL
+
+### seleziono spdep == "Social protection benefits" ???
 unique(spr_expenditures$spdep)
 frequenza_spdep <- table(spr_expenditures$spdep)
 print(frequenza_spdep)
+pr_expenditures = spr_expenditures[spr_expenditures$spdepm == "Social protection benefits",]
+spr_expenditures$spdep <- NULL
 
-spr_expenditures_bulgaria <- spr_expenditures[spr_expenditures$geo == "Bulgaria",]
-{}
+### MATRIX
+
+library(dplyr)
+library(tidyr)
+spr_expenditures_matrix <- spr_expenditures %>%
+  
+  # PASSO 1: Ordinare le righe
+  # Ordina il dataset per 'geo' e poi per 'TIME_PERIOD'
+  arrange(geo, TIME_PERIOD) %>%
+  
+  # PASSO 2: Rimodellare i dati
+  pivot_wider(
+    # Le colonne che rimangono invariate e identificano le righe
+    id_cols = c(geo, TIME_PERIOD), 
+    
+    # La colonna i cui valori diventeranno i NOMI delle nuove colonne
+    names_from = spfunc, 
+    
+    # La colonna i cui valori riempiranno le nuove colonne
+    values_from = OBS_VALUE,
+    
+    # RISOLUZIONE DUPLICATI: Calcola la media per qualsiasi valore duplicato ???
+    values_fn = sum
+  )
+
+#spr_expenditures_bulgaria <- spr_expenditures[spr_expenditures$geo == "Bulgaria",]
 
 
 
@@ -51,7 +93,9 @@ spr_expenditures_bulgaria <- spr_expenditures[spr_expenditures$geo == "Bulgaria"
 
 
 
-{
+
+
+
 # Data exploration
 head(poverty_rate)
 dim(poverty_rate)
