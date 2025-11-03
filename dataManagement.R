@@ -4,15 +4,23 @@ graphics.off()
 
 # Dataset -----------------------------------------------------------------
 
-# Data cleaning - poverty_rate
+### Data cleaning - poverty_rate
 poverty_rate = read.csv(file = "data/povertyRate.csv", header = T)
 
+poverty_rate = poverty_rate[,5:length(poverty_rate)]
+poverty_rate = poverty_rate[,1:5]
 poverty_rate = poverty_rate[poverty_rate$geo != "European Union - 27 countries (from 2020)",]
 
+poverty_total_total = poverty_rate[poverty_rate$age == 'Total',]
+poverty_total_total = poverty_total_total[poverty_total_total$sex == 'Total',]
+poverty_total_total = poverty_total_total[, 3:5]
 
-# Data cleaning - poverty_rate
+## mancano tutte le altre combinazioni
+
+
 spr_expenditures = read.csv("data/sprExpenditures.csv", header = T)
-
+# pulizia righe
+{
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area – 20 countries (from 2023)",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 19 countries  (2015-2022)",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 27 countries (2007-2013)",]
@@ -23,8 +31,27 @@ spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 18 coun
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Economic Area except Liechtenstein",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Free Trade Association except Liechtenstein",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 15 countries (1995-2004)",]
+}
+
+# pulizia colonne
+spr_expenditures = spr_expenditures[,4:11]
+unique(spr_expenditures$spfunc)
+unique(spr_expenditures$spscheme)
+spr_expenditures$spscheme <- NULL
+unique(spr_expenditures$spdep)
+frequenza_spdep <- table(spr_expenditures$spdep)
+print(frequenza_spdep)
+
+spr_expenditures_bulgaria <- spr_expenditures[spr_expenditures$geo == "Bulgaria",]
+{}
 
 
+
+
+
+
+
+{
 # Data exploration
 head(poverty_rate)
 dim(poverty_rate)
