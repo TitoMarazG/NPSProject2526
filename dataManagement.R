@@ -7,18 +7,11 @@ graphics.off()
 # Data cleaning - poverty_rate
 poverty_rate = read.csv(file = "data/povertyRate.csv", header = T)
 
-poverty_rate = poverty_rate[,-(1:14)]
-poverty_rate = poverty_rate[1:4]
-poverty_rate = poverty_rate[,-3]
+poverty_rate = poverty_rate[poverty_rate$geo != "European Union - 27 countries (from 2020)",]
 
-poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "Euro area – 20 countries (from 2023)",]
-poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "Euro area - 19 countries  (2015-2022)",]
-poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "European Union - 27 countries (2007-2013)",]
-poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "European Union - 27 countries (from 2020)",]
-poverty_rate = poverty_rate[poverty_rate$Geopolitical.entity..reporting. != "European Union - 28 countries (2013-2020)",]
 
 # Data cleaning - poverty_rate
-spr_expenditures = read.csv("data/spr_exp_ftm__custom_18697146_linear.csv", header = T)
+spr_expenditures = read.csv("data/sprExpenditures.csv", header = T)
 
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area – 20 countries (from 2023)",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "Euro area - 19 countries  (2015-2022)",]
