@@ -211,4 +211,45 @@ head(dataset_merged)
 #   row.names = FALSE               # Opzionale, ma altamente consigliato
 # )
 
+# creo le etichette
+data_labels_merged <- dataset_merged %>%
+  group_by(Geopolitical.entity..reporting.) %>%
+  # Trova la riga con il TIME_PERIOD più recente per ogni paese
+  slice_max(order_by = TIME_PERIOD, n = 1) %>%
+  ungroup()
 
+#grafico con le etichette
+ggplot(data = dataset_merged,
+       aes(x = TIME_PERIOD, y = POVERTY_RATE, color = Geopolitical.entity..reporting., group = Geopolitical.entity..reporting.)) + 
+  geom_line(linewidth = 1.5) +
+  scale_color_viridis(discrete = TRUE, option = "D") +
+  geom_point(size = 3) +
+  
+  # --- INIZIO MODIFICHE ---
+  
+  # 1. Aggiungi le etichette "intelligenti" alla fine delle linee
+  geom_text_repel(
+    data = data_labels_merged, # Usa i dati che abbiamo filtrato
+    aes(label = Geopolitical.entity..reporting.), # L'etichetta è il nome del paese
+    size = 3.5,
+    fontface = "bold",
+    nudge_x = 0.2,       # Sposta le etichette leggermente a destra
+    direction = "y",     # Permetti di spostarle solo in verticale
+    hjust = 0,           # Allinea il testo a sinistra
+    segment.color = "grey50" # Colore della lineetta di collegamento
+  ) +
+  
+  # 2. Fai spazio a destra per le etichette
+  # Aumenta l'espansione del 15% sul lato destro (mult = c(0.05, 0.15))
+  scale_x_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  
+  # 3. Rimuovi la legenda
+  theme(legend.position = "none") +
+  
+  # --- FINE MODIFICHE ---
+  
+  labs(
+    title = "Poverty Rate per Paese nel Tempo",
+    x = "Periodo di Tempo",
+    y = "Poverty Rate"
+  )

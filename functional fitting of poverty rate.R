@@ -21,16 +21,39 @@ data <- data0 %>%
     names_from = TIME_PERIOD,
 
     # La colonna i cui valori (es. 3.4, 5.1) riempiranno le nuove colonne
-    values_from = POVERTY_RATE
+    values_from = c(POVERTY_RATE, SOCIAL_EXP)
   )
 
 data <- na.omit(data)
+
+#### ordino le colonne
+
+# 1. Ottieni tutti i nomi delle colonne
+nomi_colonne <- names(data)
+
+# 2. Identifica la colonna ID e le colonne da ordinare (escludi l'ID)
+colonna_id <- "Geopolitical.entity..reporting."
+colonne_da_ordinare <- setdiff(nomi_colonne, colonna_id)
+
+# 3. Ordina le colonne per nome (alfabeticamente)
+colonne_ordinate <- sort(colonne_da_ordinare)
+
+# 4. Crea il nuovo ordine, mettendo l'ID per primo
+nuovo_ordine <- c(colonna_id, colonne_ordinate)
+
+# 5. Applica il nuovo ordine al dataset
+data_ordinato <- data %>%
+  select(all_of(nuovo_ordine))
+
+head(data_ordinato)
+data <- data_ordinato
 data <- t(data)
 # Visualizza l'inizio del nuovo dataset
 head(data)
 str(data)
 
 data <- data[-1, ]
+data <- data[1:9, ]
 nr <- nrow(data)
 nc <- ncol(data)
 data <- matrix(as.numeric(data), 
@@ -64,7 +87,7 @@ library(fda)
 
 norder <- 4        # spline order (4th order polynomials)
 degree <- norder-1  # spline degree
-nbasis <- 5   # how many basis we want
+nbasis <- 6   # how many basis we want
 
 time <- 1:dim(data)[1]
 
@@ -81,7 +104,7 @@ data.bspline <- Data2fd(y = data, argvals = time,basisobj = basis_spline)
 #### PLOT APPROX SPLINES
 # x11()
 par(mfrow=c(1,2))
-plot.fd(data.bspline, main = 'spline approx: degree=3, nbasis=20')
+plot.fd(data.bspline, main = 'spline approx: degree=3, nbasis=6')
 matplot(data,type='l', main = 'true curves'  )
 
 #### FOURIER ####
