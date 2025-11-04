@@ -6,7 +6,7 @@ graphics.off()
 
 ### Data cleaning - poverty_rate
 poverty_rate = read.csv(file = "data/povertyRate.csv", header = T)
-
+{
 poverty_rate = poverty_rate[,5:length(poverty_rate)]
 poverty_rate = poverty_rate[,1:5]
 poverty_rate = poverty_rate[poverty_rate$geo != "European Union - 27 countries (from 2020)",]
@@ -14,6 +14,10 @@ poverty_rate = poverty_rate[poverty_rate$geo != "European Union - 27 countries (
 poverty_total_total = poverty_rate[poverty_rate$age == 'Total',]
 poverty_total_total = poverty_total_total[poverty_total_total$sex == 'Total',]
 poverty_total_total = poverty_total_total[, 3:5]
+
+names(poverty_total_total)[names(poverty_total_total) == "OBS_VALUE"] <- "Poverty rate"
+names(poverty_total_total)[names(poverty_total_total) == "Geopolitical.entity..reporting."] <- "geo"
+}
 
 ## mancano tutte le altre combinazioni
 
@@ -32,9 +36,9 @@ spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Economic A
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Free Trade Association except Liechtenstein",]
 spr_expenditures = spr_expenditures[spr_expenditures$geo != "European Union - 15 countries (1995-2004)",]
 }
-### seleziono l'unità di misura: Million euro (at constant 2015 prices)
+### seleziono l'unità di misura: Euro per inhabitant (at constant 2015 prices)
 unique(spr_expenditures$unit)
-spr_expenditures = spr_expenditures[spr_expenditures$unit == "Million euro (at constant 2015 prices)", ]
+spr_expenditures = spr_expenditures[spr_expenditures$unit == "Euro per inhabitant (at constant 2015 prices)", ]
 spr_expenditures$unit <- NULL
 # pulizia colonne
 {
@@ -85,9 +89,18 @@ spr_expenditures_matrix <- spr_expenditures %>%
     values_fn = sum
   )
 
-#spr_expenditures_bulgaria <- spr_expenditures[spr_expenditures$geo == "Bulgaria",]
 
+#### MERGE ####
 
+library(dplyr)
+
+merge_spr_PovRate <- left_join(
+  x = spr_expenditures_matrix,      # Il dataset principale (left/sinistro)
+  y = poverty_total_total,  # Il dataset da cui prendere le nuove colonne (right/destro)
+  
+  # Specifica le colonne (chiavi) su cui basare l'unione
+  by = c("geo", "TIME_PERIOD")
+)
 
 
 
@@ -97,30 +110,29 @@ spr_expenditures_matrix <- spr_expenditures %>%
 
 
 # Data exploration
-head(poverty_rate)
-dim(poverty_rate)
-table(poverty_rate$Geopolitical.entity..reporting.)
-summary(poverty_rate)
 
-nCountries = length(unique(poverty_rate$Geopolitical.entity..reporting.))
+nCountries = length(unique(merge_spr_PovRate$geo))
+nCountries
 
-head(spr_expenditures)
-dim(spr_expenditures)
-table(spr_expenditures$geo)
-summary(spr_expenditures)
+summary(merge_spr_PovRate)
 
-## Note: in poverty_rate, Bosnia and Herzegovina is missing, why??
 
-# Save --------------------------------------------------------------------
+#### Save ####
 
 # Supponiamo che il tuo dataset si chiami 'dati_uniti'
 # 
 # write.csv(
-#   x = poverty_rate,                 # Il data frame che vuoi salvare
-#   file = "data/poverty_rate_cleaned.csv",  # Il percorso e il nome del file di output
+#   x = merge_spr_PovRate,                 # Il data frame che vuoi salvare
+#   file = "data/merge_spr_PovRate.csv",  # Il percorso e il nome del file di output
 #   row.names = FALSE               # Opzionale, ma altamente consigliato
 # )
 
+#### 2018 ####
+
+data_2018 <- merge_spr_PovRate[merge_spr_PovRate$TIME_PERIOD == 2018, ]
+
+library(ggplot2)
+plot(data_2018[, 3:15])
 # Plots -------------------------------------------------------------------
 
 # install.packages("ggplot2")
