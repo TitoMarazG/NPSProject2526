@@ -15,7 +15,7 @@ poverty_total_total = poverty_rate[poverty_rate$age == 'Total',]
 poverty_total_total = poverty_total_total[poverty_total_total$sex == 'Total',]
 poverty_total_total = poverty_total_total[, 3:5]
 
-names(poverty_total_total)[names(poverty_total_total) == "OBS_VALUE"] <- "Poverty rate"
+names(poverty_total_total)[names(poverty_total_total) == "OBS_VALUE"] <- "Poverty_rate"
 names(poverty_total_total)[names(poverty_total_total) == "Geopolitical.entity..reporting."] <- "geo"
 }
 
@@ -61,7 +61,7 @@ spr_expenditures$spscheme <- NULL
 unique(spr_expenditures$spdep)
 frequenza_spdep <- table(spr_expenditures$spdep)
 print(frequenza_spdep)
-pr_expenditures = spr_expenditures[spr_expenditures$spdepm == "Social protection benefits",]
+spr_expenditures = spr_expenditures[spr_expenditures$spdepm == "Social protection benefits",]
 spr_expenditures$spdep <- NULL
 
 ### MATRIX
@@ -140,10 +140,9 @@ plot(data_2018[, 3:15])
 library(ggplot2)
 library(viridis)
 
-paese <- poverty_rate$Geopolitical.entity..reporting.
 
-ggplot(data = poverty_rate,
-       aes(x = TIME_PERIOD, y = OBS_VALUE, color = paese, group = paese)) + 
+ggplot(data = poverty_total_total,
+       aes(x = TIME_PERIOD, y = Poverty_rate, color = geo, group = paese)) + 
   geom_line(linewidth = 1.5) +  # <- Linee Grosse (linewidth > 1)
   scale_color_viridis(discrete = TRUE, option = "D") + # <- Palette Variata
   geom_point(size = 3) + # Punti più grandi per abbinare le linee
@@ -157,27 +156,46 @@ ggplot(data = poverty_rate,
 library(dplyr)
 
 # Definisci i paesi da includere
-paesi_selezionati <- c("France", "Italy", "Germany", "Bulgaria", "Poland")
+paesi_selezionati <- c("France", "Italy", "Germany", "Bulgaria", "Greece")
 
-data_subsample <- poverty_rate %>%
+data_subsample <- poverty_total_total %>%
   # PASSO 1: Filtra il dataframe 
-  filter( poverty_rate$Geopolitical.entity..reporting. %in% paesi_selezionati) 
+  filter( poverty_total_total$geo %in% paesi_selezionati) 
 
 
-paese <- data_subsample$Geopolitical.entity..reporting.
+country <- data_subsample$geo
   
 # PASSO 2: Crea il grafico con i dati filtrati
-ggplot( data = data_subsample,
-        aes(x = TIME_PERIOD, y = OBS_VALUE, color = paese, group = paese)) + 
-        geom_line(linewidth = 1.5) + # Linee grosse
-        geom_point(size = 3) +
-        scale_color_viridis(discrete = TRUE, option = "D") + 
- 
-        labs(
-          title = "Tassi di Povertà:",
-          x = "Periodo di Tempo",
-          y = "Tasso di Povertà"
-        )
 
+ggplot( data = data_subsample,
+        aes(x = TIME_PERIOD, y = Poverty_rate, color = country, group = country)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 3) +
+  scale_color_viridis(discrete = TRUE, option = "D") + 
+  
+  labs(
+    title = "Poverty Rate",
+    subtitle = " ",
+    x = " ",
+    y = " ",
+    color = "Country"
+  ) +
+  
+  # --- AGGIUNGI QUESTO BLOCCO --- #
+  scale_x_continuous(
+    breaks = seq(from = min(data_subsample$TIME_PERIOD), # Inizia dal primo anno
+                 to = max(data_subsample$TIME_PERIOD),   # Finisce all'ultimo
+                 by = 2)                               # Mostra un'etichetta ogni 2 anni
+  ) +
+  # ------------------------------- #
+  
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 14, hjust = 0.5),
+    legend.position = "right",
+    axis.title = element_text(size = 12),
+    panel.grid.minor = element_blank()
+  )
 
 

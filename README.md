@@ -3,8 +3,25 @@
 All data presented in this repository is sourced from Eurostat, the statistical office of the European Union: https://ec.europa.eu/eurostat
 
 Datasets are found in the Dataset section as follows:
-- **Persons at risk of poverty:** Detailed datasets > Living conditions and welfare > Income and living conditions
-- **Social protection expenditure:** Detailed datasets > Living conditions and welfare > Social protection
+- **Persons at risk of poverty:** Detailed datasets >  > population e social conditions > Living conditions and welfare > Income and living conditions > persons at risk of poverty > main indicator > ilc_peps01n
+- **Social protection expenditure:** Detailed datasets > population e social conditions >  Social protection > social protection expenditure (spr_exp) > expenditure by function ( SPR_EXP_FUNC) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 💻 Repository Workflow Guide
