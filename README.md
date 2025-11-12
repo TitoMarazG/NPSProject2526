@@ -4,10 +4,38 @@ All data presented in this repository is sourced from Eurostat, the statistical 
 
 Datasets are found in the Dataset section as follows:
 - **Persons at risk of poverty:** Detailed datasets >  > population e social conditions > Living conditions and welfare > Income and living conditions > persons at risk of poverty > main indicator > ilc_peps01n
-- **Social protection expenditure:** Detailed datasets > population e social conditions >  Social protection > social protection expenditure (spr_exp) > expenditure by function ( SPR_EXP_FUNC) 
+https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en&category=livcon.ilc.ilc_pe.ilc_peps
+- **Social protection expenditure:** Detailed datasets > population e social conditions >  Social protection > social protection expenditure (spr_exp) > expenditure by function ( SPR_EXP_FUNC)
+https://ec.europa.eu/eurostat/databrowser/view/spr_exp_func/default/table?lang=en&category=spr.spr_exp
 
+unique(spr_expenditures$spfunc)
+[1] "Disability"                          
+[2] "Social exclusion, n.e.c."            
+[3] "Family/children"                     
+[4] "Housing"                             
+[5] "Old age"                              
+[6] "Sickness/health care"                
+[7] "Survivors"                           
+[8] "Unemployment"                               
+[9] "Total"  
 
-
+unique(spr_expenditures$spdep)
+- "Social protection benefits"
+  - "Benefits in kind"
+  - "Cash benefits"
+    - "Periodic cash benefits"
+    - "Lump sum cash benefits"
+Queste voci si riferiscono alla classificazione della spesa per protezione
+sociale in base al tipo di prestazione erogata, secondo la metodologia ESSPROS.
+La variabile spdep nel tuo dataset (che è il codice usato da Eurostat per questa
+dimensione) scompone la spesa sociale come segue. 
+###Dettaglio delle voci
+Ecco a cosa corrisponde ciascun elemento che hai trovato:
+Social protection benefits (Prestazioni di protezione sociale): Questo è il valore totale della spesa. È la somma di tutte le diverse tipologie di prestazioni (sia in denaro che in natura).
+Benefits in kind (Prestazioni in natura): Si riferisce alla spesa per beni e servizi forniti direttamente ai beneficiari. Non è un pagamento in denaro, ma ad esempio la fornitura di cure sanitarie, assistenza a lungo termine, alloggio sociale, ecc.
+Cash benefits (Prestazioni in denaro): Questo è il totale delle prestazioni pagate direttamente in denaro ai beneficiari. Questa categoria si suddivide ulteriormente in due tipi:
+- Periodic cash benefits (Prestazioni periodiche in denaro) Sono pagamenti in denaro effettuati a intervalli regolari, come ad esempio le pensioni (vecchiaia, invalidità), le indennità di disoccupazione mensili o gli assegni familiari.
+- Lump sum cash benefits (Prestazioni in denaro una tantum) Sono pagamenti in denaro effettuati in un'unica soluzione, non regolari. Un esempio classico è un "bonus nascita" o un'indennità di liquidazione.
 
 
 
